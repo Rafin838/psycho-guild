@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --bg: #05070a;
+    --glass: rgba(255, 255, 255, 0.04);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --accent: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    --accent-blue: #3b82f6;
+    --accent-purple: #8b5cf6;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-bengali: 'Hind Siliguri', 'Inter', sans-serif;
+  }
+
+  body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: var(--bg);
+    font-family: var(--font-sans);
+    color: #ffffff;
+    overflow-x: hidden;
+    background-image: 
+      radial-gradient(circle at 0% 0%, #1e1b4b 0%, transparent 50%),
+      radial-gradient(circle at 100% 100%, #1e1b4b 0%, transparent 50%);
+    background-attachment: fixed;
+  }
+}
+
+/* Sleek Interface Glassmorphism & UI Classes */
+.glass-card {
+  background: var(--glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.glass-card-sm {
+  background: var(--glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.4);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: #ffffff;
+  font-size: 16px;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+}
+
+.glass-input:focus {
+  outline: none;
+  background: rgba(0, 0, 0, 0.4);
+  border-color: #3b82f6;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.25);
+}
+
+.gradient-text {
+  background: var(--accent);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-btn {
+  background: var(--accent);
+  color: #ffffff;
+  border-radius: 12px;
+  font-weight: 600;
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  transition: all 0.25s ease;
+}
+
+.gradient-btn:hover {
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.5);
+  transform: translateY(-1px);
+}
+
+.gradient-btn:active {
+  transform: translateY(0px);
+}
+
+.glow {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.glow-hover:hover {
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
+}
+
+.admin-icon-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(59, 130, 246, 0.4);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+.stat-mini {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stat-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+::-webkit-scrollbar-track {
+  background: #05070a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.6);
+}
+
+/* Horizontal Table Scroll Container for Mobile */
+.table-scroll-container {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x pan-y;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59, 130, 246, 0.45) rgba(0, 0, 0, 0.35);
+}
+
+.table-scroll-container::-webkit-scrollbar {
+  height: 6px;
+  display: block;
+}
+
+.table-scroll-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 9999px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(59, 130, 246, 0.5);
+  border-radius: 9999px;
+}
+
+.table-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(59, 130, 246, 0.8);
+}
+
+

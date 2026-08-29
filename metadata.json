@@ -1,0 +1,8 @@
+{
+  "name": "Remix Remix GUILD SYSTEM",
+  "description": "Premium Dark Liquid Glassmorphism Guild Membership and Admin Management Platform",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

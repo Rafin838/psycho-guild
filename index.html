@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="bn">
+  <head>
+    <script>
+      // Bulletproof Protective Polyfill for window.fetch getter-only crashes
+      (function() {
+        try {
+          const origDefineProperty = Object.defineProperty;
+          Object.defineProperty = function(obj, prop, descriptor) {
+            if ((obj === window || obj === globalThis) && prop === 'fetch') {
+              if (descriptor && typeof descriptor.get === 'function' && !descriptor.set) {
+                descriptor.set = function(v) { console.warn('Ignored fetch reassignment'); };
+              }
+            }
+            return origDefineProperty(obj, prop, descriptor);
+          };
+          const target = Object.getOwnPropertyDescriptor(window, 'fetch') ? window : (typeof Window !== 'undefined' && Window.prototype ? Window.prototype : null);
+          if (target) {
+            const desc = Object.getOwnPropertyDescriptor(target, 'fetch');
+            if (desc && desc.get && !desc.set && desc.configurable) {
+              origDefineProperty(target, 'fetch', {
+                get: desc.get,
+                set: function(v) { console.warn('Ignored fetch reassignment'); },
+                configurable: true,
+                enumerable: desc.enumerable
+              });
+            }
+          }
+        } catch (e) {
+          console.error('Fetch polyfill failed:', e);
+        }
+      })();
+    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GUILD SYSTEM</title>
+    <meta name="description" content="Premium Dark Liquid Glassmorphism Guild Membership and Admin Management Platform" />
+    <meta property="og:title" content="GUILD SYSTEM" />
+    <meta property="og:description" content="Premium Dark Liquid Glassmorphism Guild Membership and Admin Management Platform" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Orbitron:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-[#070913] text-slate-100 min-h-screen selection:bg-cyan-500/30 selection:text-cyan-200 antialiased">
+    <div id="root"></div>
+    <script id="spotify-iframe-api-script" src="https://open.spotify.com/embed/iframe-api/v1" async></script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+
