@@ -7,6 +7,7 @@ import {
   getStats,
   updateSubmissionStatus,
   deleteSubmission,
+  checkSupabaseHealth,
 } from './db.js';
 import {
   authenticateAdmin,
@@ -48,11 +49,13 @@ export function createExpressApp() {
 
   // Health check
   app.get('/api/health', (_req, res) => {
+    const dbHealth = checkSupabaseHealth();
     res.json({
-      status: 'ok',
+      status: dbHealth.connected ? 'ok' : 'error',
+      database: dbHealth,
       serverTime: new Date().toISOString(),
       env: process.env.NODE_ENV || 'development',
-      platform: process.env.NETLIFY ? 'netlify-serverless' : 'node-server',
+      platform: process.env.VERCEL ? 'vercel-serverless' : 'node-server',
     });
   });
 

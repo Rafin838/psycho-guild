@@ -161,7 +161,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
             <div className="p-3 rounded-xl bg-[rgba(0,0,0,0.25)] border border-white/[0.08]">
               <span className="text-[#94a3b8] block mb-1">Storage Engine</span>
-              <span className="font-mono text-blue-400">Netlify Blobs & Cloud DB</span>
+              <span className="font-mono text-blue-400">Supabase Postgres</span>
             </div>
             <div className="p-3 rounded-xl bg-[rgba(0,0,0,0.25)] border border-white/[0.08]">
               <span className="text-[#94a3b8] block mb-1">Real-time Engine</span>
@@ -169,7 +169,7 @@ export const AdminSettings: React.FC<AdminSettingsProps> = ({
             </div>
             <div className="p-3 rounded-xl bg-[rgba(0,0,0,0.25)] border border-white/[0.08]">
               <span className="text-[#94a3b8] block mb-1">Server Engine</span>
-              <span className="font-mono text-purple-400">Netlify Functions (Serverless)</span>
+              <span className="font-mono text-purple-400">Vercel Serverless Functions</span>
             </div>
           </div>
         </div>

@@ -43,7 +43,7 @@ export const StepTwoMessengerGuild: React.FC<StepTwoMessengerGuildProps> = ({
   const displayUid = localSubmission?.gameUid || submission?.gameUid || gameUid;
   const displayStatus = localSubmission?.status || submission?.status || 'Pending';
 
-  // Live polling mechanism to fetch latest database status from Netlify API
+  // Live polling mechanism to fetch latest database status from Vercel API
   const fetchLatestStatus = useCallback(async () => {
     if (!activeId) return;
     try {

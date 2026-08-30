@@ -9,9 +9,9 @@ export interface AuthenticatedRequest extends Request {
 export function isProductionEnv(): boolean {
   return (
     process.env.NODE_ENV === 'production' ||
-    Boolean(process.env.NETLIFY) ||
+    Boolean(process.env.VERCEL) ||
+    Boolean(process.env.VERCEL_ENV) ||
     Boolean(process.env.AWS_LAMBDA_FUNCTION_NAME) ||
-    Boolean(process.env.NETLIFY_BLOBS_CONTEXT) ||
     Boolean(process.env.URL)
   );
 }
@@ -34,7 +34,7 @@ export function getAdminConfig(): {
         isConfigured: false,
         adminEmail: '',
         error:
-          'Admin authentication is not configured in production. Please set ADMIN_EMAIL, ADMIN_PASSWORD, and JWT_SECRET in Netlify environment variables.',
+          'Admin authentication is not configured in production. Please set ADMIN_EMAIL, ADMIN_PASSWORD, and JWT_SECRET in Vercel environment variables.',
       };
     }
 

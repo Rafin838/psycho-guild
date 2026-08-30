@@ -5,10 +5,13 @@ import { formatDhakaDate, formatDhakaTime, isTodayInDhaka } from './timezone.js'
 
 // Configuration for Supabase
 const supabaseUrl = process.env.SUPABASE_URL || '';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || '';
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
 // Create a single supabase client for interacting with the database
 let supabase: any = null;
+
+console.log(`[SUPABASE CONFIG]\nURL configured: ${!!supabaseUrl}\nSERVICE KEY configured: ${!!supabaseServiceKey}`);
+
 if (supabaseUrl && supabaseServiceKey) {
   supabase = createClient(supabaseUrl, supabaseServiceKey, {
     auth: {
@@ -19,42 +22,6 @@ if (supabaseUrl && supabaseServiceKey) {
 
 export interface InternalSubmissionRecord extends UserSubmission {
   submissionSecret: string;
-}
-
-// Known legacy development/demo identifiers to filter out
-const KNOWN_LEGACY_DEMO_NAMES = new Set([
-  'shadowhunter_bd',
-  'shadowhunter',
-  'darkknight_77',
-  'darkknight',
-  'sniperqueen_99',
-  'sniperqueen',
-  'tester alpha',
-  'tester beta',
-  'tester',
-  'demo',
-  'example',
-  'mock',
-]);
-
-const KNOWN_LEGACY_DEMO_IDS = new Set([
-  'sub_seed_1',
-  'sub_seed_2',
-  'sub_seed_3',
-]);
-
-export function filterOutLegacyDemoRecords(records: InternalSubmissionRecord[]): InternalSubmissionRecord[] {
-  if (!Array.isArray(records)) return [];
-  return records.filter((rec) => {
-    if (!rec || typeof rec !== 'object' || !rec.id) return false;
-    if (KNOWN_LEGACY_DEMO_IDS.has(rec.id)) return false;
-    if (typeof rec.id === 'string' && (rec.id.startsWith('sub_seed_') || rec.id.startsWith('seed_'))) return false;
-
-    const lowerName = (rec.gameName || '').trim().toLowerCase();
-    if (KNOWN_LEGACY_DEMO_NAMES.has(lowerName)) return false;
-
-    return true;
-  });
 }
 
 // Helper to map DB record to internal record
@@ -76,7 +43,7 @@ function mapDbRecordToInternal(dbRecord: any): InternalSubmissionRecord {
 export async function loadAllSubmissions(): Promise<InternalSubmissionRecord[]> {
   if (!supabaseUrl || !supabaseServiceKey) {
     console.warn('Supabase credentials missing. Returning empty submissions.');
-    return [];
+    throw new Error('Database credentials missing. Please configure SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.');
   }
 
   const { data, error } = await supabase
@@ -86,11 +53,32 @@ export async function loadAllSubmissions(): Promise<InternalSubmissionRecord[]> 
 
   if (error) {
     console.error('Failed to read from Supabase:', error);
-    throw new Error('Production Database Error: Failed to retrieve submission records from Supabase.');
+    if (error.code === '42P01') {
+      throw new Error("Supabase Error: The 'submissions' table does not exist. Please run the SQL in 'supabase-schema.sql'.");
+    }
+    throw new Error(`Production Database Error: ${error.message || 'Failed to retrieve submission records from Supabase.'}`);
   }
 
   const mapped = (data || []).map(mapDbRecordToInternal);
-  return filterOutLegacyDemoRecords(mapped);
+  
+  console.log(`[SUPABASE SELECT]\nsuccess: true\nrecord count: ${mapped.length}`);
+  
+  return mapped;
+}
+
+export function checkSupabaseHealth(): { status: string; message: string; connected: boolean } {
+  if (!supabaseUrl || !supabaseServiceKey) {
+    return {
+      status: 'error',
+      message: 'SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY environment variables are missing.',
+      connected: false
+    };
+  }
+  return {
+    status: 'ok',
+    message: 'Supabase credentials configured.',
+    connected: true
+  };
 }
 
 export async function checkGameUidExists(
@@ -130,10 +118,6 @@ export async function getAllSubmissionsAdmin(): Promise<UserSubmission[]> {
       ipAddress: item.ipAddress,
       notes: item.notes,
     }));
-
-  console.log(`[PRODUCTION ADMIN FETCH]`);
-  console.log(`database read: SUCCESS`);
-  console.log(`submission count: ${mapped.length}`);
 
   return mapped;
 }
@@ -256,13 +240,20 @@ export async function addSubmission(
 
   if (error) {
     console.error('Supabase INSERT error:', error);
-    throw new Error('Production Database Error: Failed to persist record.');
+    if (error.code === '42P01') {
+      throw new Error("Supabase Error: The 'submissions' table does not exist. Please run the SQL in 'supabase-schema.sql'.");
+    }
+    if (error.code === '23505') {
+      return {
+        success: false,
+        duplicateUid: true,
+        message: 'This Game UID has already been submitted.',
+      };
+    }
+    throw new Error(`Production Database Error: ${error.message || 'Failed to persist record.'}`);
   }
 
-  console.log(`[PRODUCTION SUBMISSION]`);
-  console.log(`id: ${submissionId}`);
-  console.log(`gameName: ${gameName}`);
-  console.log(`database write: SUCCESS`);
+  console.log(`[SUPABASE INSERT]\nsuccess: true\nsubmission ID: ${submissionId}`);
 
   return {
     success: true,
